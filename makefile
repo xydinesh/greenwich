@@ -20,9 +20,8 @@ clean:
 run:
 	$(GOBUILD) -o $(BINARY_NAME) -v ./...
 	./$(BINARY_NAME)
-
 install:
-    cp $(BINARY) /usr/local/bin
+	cp $(BINARY_NAM) /usr/local/bin
 # Cross compilation
 build-linux:
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 $(GOBUILD) -o $(BINARY_UNIX) -v
