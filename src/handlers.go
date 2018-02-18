@@ -3,33 +3,17 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/bradfitz/latlong"
-	"github.com/gorilla/mux"
-	"html"
-	"log"
 	"net/http"
 	"strconv"
 	"strings"
+
+	"github.com/bradfitz/latlong"
+	"github.com/gorilla/mux"
 )
 
-type Point struct {
-	Lat string `json: "lat"`
-	Lon string `json: "lon"`
-	TZ  string `json: "tz"`
-}
-
-type Points []Point
-
-func main() {
-	router := mux.NewRouter().StrictSlash(true)
-	router.HandleFunc("/", Index)
-	router.HandleFunc("/timezone/{coordinates}", TimeZoneShow)
-	log.Fatal(http.ListenAndServe(":8080", router))
-}
-
-// Index function returns request path
-func Index(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Hello, %q", html.EscapeString(r.URL.Path))
+// Health function returns request path
+func Health(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintln(w, "Ok")
 }
 
 // TimeZoneShow returns timezone for a given set of points
@@ -42,12 +26,18 @@ func TimeZoneShow(w http.ResponseWriter, r *http.Request) {
 		sLatLon := strings.Split(p, ",")
 		lat, err := strconv.ParseFloat(sLatLon[0], 64)
 		if err != nil {
-			fmt.Printf("Error in parsing float, lat: %s", sLatLon[0])
+			fmt.Println("Error in parsing float, lat:", sLatLon[0])
+			w.WriteHeader(http.StatusBadRequest)
+			w.Write([]byte("400 - Error in parsing float, lat\n"))
+			return
 		}
 
 		lon, err := strconv.ParseFloat(sLatLon[1], 64)
 		if err != nil {
-			fmt.Printf("Error in parsing float, lon: %s", sLatLon[1])
+			fmt.Println("Error in parsing float, lon:", sLatLon[1])
+			w.WriteHeader(http.StatusBadRequest)
+			w.Write([]byte("400 - Error in parsing float, lon\n"))
+			return
 		}
 		zone := latlong.LookupZoneName(lat, lon)
 		timezones = append(timezones, Point{Lat: sLatLon[0], Lon: sLatLon[1], TZ: zone})
