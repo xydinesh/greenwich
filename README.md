@@ -1,4 +1,4 @@
-# greenwich
+# Greenwich
 Web service to get timezones for given points.
 
 # usage
