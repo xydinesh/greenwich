@@ -1,5 +1,5 @@
 # greenwich
-Web service to get timezone for a given points.
+Web service to get timezones for given points.
 
 # usage
 
