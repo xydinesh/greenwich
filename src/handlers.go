@@ -40,6 +40,9 @@ func TimeZoneShow(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		zone := latlong.LookupZoneName(lat, lon)
+		if zone == "" {
+			zone = "unknown_timezone"
+		}
 		timezones = append(timezones, Point{Lat: sLatLon[0], Lon: sLatLon[1], TZ: zone})
 	}
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
